@@ -11,6 +11,17 @@ AddEventHandler("gameEventTriggered", function(event, data)
     if victimDied and NetworkGetPlayerIndexFromPed(victim) == player and (IsPedDeadOrDying(victim, true) or IsPedFatallyInjured(victim)) then
         local killerEntity, deathCause = GetPedSourceOfDeath(playerPed), GetPedCauseOfDeath(playerPed)
         local killerClientId = NetworkGetPlayerIndexFromPed(killerEntity)
+    
+        if exports['highqez_crawldead']:IsCrawling() then
+            exports['highqez_crawldead']:EndCrawl()
+        elseif exports['highqez_crawldead']:IsDead() then
+        elseif not exports['highqez_crawldead']:IsCrawling() then
+            exports['highqez_crawldead']:StartCrawl()
+            return
+        else
+            return    
+        end
+
         if killerEntity ~= playerPed and killerClientId and NetworkIsPlayerActive(killerClientId) then
             PlayerKilledByPlayer(GetPlayerServerId(killerClientId), killerClientId, deathCause)
         else
